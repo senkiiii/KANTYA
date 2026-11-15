@@ -1,0 +1,25 @@
+<section class="chart-panel forecast-summary">
+  <h2>Forecast Summary</h2>
+  {% if forecast_summary %}
+  {% set f=forecast_summary %}
+  <p>The {{ 'demo' if demo else 'saved' }} forecast estimates {{ item }} sales at {{ period }} from {{ results[0].day }} to {{ results[-1].day }}.
+  Estimates range from {{ f.low.quantity }} on {{ f.low.day }} to {{ f.high.quantity }} on {{ f.high.day }}.
+  {% if f.comparison %}The estimated average of {{ f.comparison.forecast|number }} {{ unit|lower }}s per date is {{ f.comparison.direction }} the latest five-date average of {{ f.comparison.recent|number }}.
+  {% else %}A five-date comparison requires more recorded sales.{% endif %}
+  {% if f.leftover is not none %}Recent leftovers averaged {{ f.leftover|number }} {{ unit|lower }}s per recorded date.
+  {% else %}Check the latest leftover records before adjusting preparation.{% endif %}
+  {% if demo or outdated or elapsed %}Update the verified operating calendar and sales records before generating a forecast for preparation.
+  {% else %}Review batch size for {{ f.high.day }} first, using the estimate and recent leftovers to guide preparation.{% endif %}</p>
+  {% elif history_summary %}
+  {% set h=history_summary %}
+  <p>The chart shows {{ h.count }} recorded dates for {{ item }} at {{ period }}, from {{ h.first }} to {{ h.last }}.
+  Latest recorded sales were {{ h.latest.sold }} {{ unit|lower }}s on {{ h.last }}.
+  Sales ranged from {{ h.low.sold }} to {{ h.high.sold }} across the displayed dates.
+  Over the latest {{ h.recent_count }} recorded dates, sales averaged {{ h.sold|number }} and leftovers averaged {{ h.leftover|number }} {{ unit|lower }}s per date.
+  {% if not forecast_available %}Confirm the missing operating dates and check for any gaps in sales records before planning.
+  {% elif not demo_available %}Record at least 20 operating days for this item and period before generating a forecast.
+  {% else %}Generate a forecast for the confirmed dates and compare it with recent leftovers before changing batch size.{% endif %}</p>
+  {% else %}
+  <p>There are no sales records for {{ item }} at {{ period }}. Choose an item and selling period with recorded sales or add verified records for this selection.</p>
+  {% endif %}
+</section>

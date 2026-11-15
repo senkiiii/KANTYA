@@ -1,0 +1,48 @@
+{% set report_url = url_for('reports',start=filters.start,end=filters.end,item=filters.item,period=filters.period) %}
+{% set action_url = url_for('backup_recovery',start=filters.start,end=filters.end,item=filters.item,period=filters.period) %}
+<dialog id="reports-backup" class="backup-dialog" aria-labelledby="backup-heading" open>
+  <header class="section-heading">
+    <h2 id="backup-heading">Backup &amp; Recovery</h2>
+    <a href="{{ report_url }}" aria-label="Close Backup and Recovery">×</a>
+  </header>
+  <p><span class="role-tag">Authorized Manager</span></p>
+  {% include 'notices.html' %}
+  <p>Create an encrypted backup or restore a separate copy for verification.</p>
+  {% if not backup.configured %}
+  <p>Configure the backup vault and encryption key in <code>.env</code>. See <code>KANTYA_SETUP.txt</code> for setup steps.</p>
+  {% else %}
+  <form method="post" action="{{ action_url }}">
+    <input type="hidden" name="csrf" value="{{ session.csrf }}">
+    <button name="action" value="create" {% if not backup.can_create %}disabled{% endif %}>Create Backup</button>
+    {% if not backup.can_create %}<p>Add the system configuration file before creating a backup.</p>{% endif %}
+  </form>
+  <hr>
+  <h3>Backup History</h3>
+  {% if backup.history %}
+  <form method="post" action="{{ action_url }}">
+    <input type="hidden" name="csrf" value="{{ session.csrf }}">
+    <label for="backup-archive">Backup archive</label>
+    <select id="backup-archive" name="backup" required>
+      {% for name in backup.history %}<option value="{{ name }}">{{ name }}</option>{% endfor %}
+    </select>
+    <p><label class="backup-confirm"><input type="checkbox" name="confirm" value="yes" required> Restore a copy to staging for verification</label></p>
+    <button class="secondary" name="action" value="restore">Restore to Staging</button>
+  </form>
+  {% else %}
+  <p>No backups yet.</p>
+  <button class="secondary" disabled>Restore to Staging</button>
+  {% endif %}
+  {% endif %}
+</dialog>
+<script>
+  (() => {
+    const dialog = document.getElementById('reports-backup');
+    if (!dialog.showModal) return;
+    dialog.removeAttribute('open');
+    dialog.showModal();
+    dialog.addEventListener('cancel', event => {
+      event.preventDefault();
+      window.location.assign(dialog.querySelector('header a').href);
+    });
+  })();
+</script>

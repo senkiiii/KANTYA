@@ -1,0 +1,10 @@
+<header class="panel-heading"><h1 id="record-panel-title">Delete Food Record</h1><a href="{{back}}" data-panel-close>Close</a></header>
+<p><strong>{{r.item}}</strong> · {{r.day}} · {{r.period}}</p>
+<p>This record will be removed from Food Records, reports, and forecast inputs. An audit copy and its correction history will be retained.</p>
+<form class="record-form" method="post" action="{{url_for('delete_record',rid=r.id,back=back)}}">
+  <input type="hidden" name="csrf" value="{{session.csrf}}">
+  <label for="delete-reason">Reason for deletion</label>
+  <textarea id="delete-reason" name="reason" required maxlength="1000">{{reason}}</textarea>
+  {% if error %}<p class="field-error" role="alert">{{error}}</p>{% endif %}
+  <footer class="panel-actions"><button class="danger-button">Delete record</button><a href="{{back}}" data-panel-close>Cancel</a></footer>
+</form>

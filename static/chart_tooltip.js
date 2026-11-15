@@ -1,0 +1,3 @@
+/* One accessible pointer tooltip for the SVG chart data. */
+(()=>{let tip;function show(e){const mark=e.target.closest?.('svg.kantya-svg [data-tooltip]');if(!mark){hide();return;}if(!tip){tip=document.createElement('div');tip.className='kantya-tooltip';tip.setAttribute('role','tooltip');document.body.appendChild(tip);}tip.textContent=mark.dataset.tooltip;tip.hidden=false;let x=e.clientX+15,y=e.clientY+15;if(x+290>innerWidth)x=e.clientX-295;if(y+95>innerHeight)y=e.clientY-100;tip.style.left=Math.max(6,x)+'px';tip.style.top=Math.max(6,y)+'px';}
+function hide(){if(tip)tip.hidden=true;}document.addEventListener('pointermove',show,{passive:true});document.addEventListener('pointerleave',hide,true);document.addEventListener('scroll',hide,true);})();

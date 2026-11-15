@@ -1,0 +1,24 @@
+{% macro error(key) %}{% if errors.get(key) %}<span class="field-error" role="alert">{{errors[key]}}</span>{% endif %}{% endmacro %}
+<header class="panel-heading"><h1 id="record-panel-title">{{'Correct' if r else 'Add'}} Food Record</h1><a href="{{back}}" data-panel-close aria-label="Close panel">Close</a></header>
+<form class="record-form" method="post" action="{{request.full_path.rstrip('?')}}">
+  <input type="hidden" name="csrf" value="{{session.csrf}}">
+  {% if r %}<p>{{r.item}} · {{r.day}} · {{r.period}} · {{items[r.item]}}</p>
+  {% else %}
+  <label>Date<input name="day" type="date" required value="{{values.get('day','')}}" data-operating-date>{{error('day')}}</label><p class="form-date-warning" role="alert" hidden></p>
+  <label>Food item<select name="item" data-menu-item required><option value="">Select an item</option>{% for i,u in items.items() %}<option data-unit="{{u}}" {% if values.get('item')==i %}selected{% endif %}>{{i}}</option>{% endfor %}</select>{{error('item')}}</label>
+  <label>Selling period<select name="period" data-menu-period>{% for p in periods %}<option {% if values.get('period')==p %}selected{% endif %}>{{p}}</option>{% endfor %}</select>{{error('period')}}</label>
+  {% endif %}
+  {% if duplicate %}<p class="field-error" role="alert">{{errors.duplicate}} <a data-record-panel href="{{url_for('view_record',rid=duplicate,back=back)}}">View existing record</a></p>{% endif %}
+  {{error('quantities')}}
+  <p>Quantity unit · <strong data-record-unit>{{items[r.item] if r else items.get(values.get('item'),'—')}}</strong></p>
+  <div class="record-quantities">
+  {% for name,label in [('prepared','Prepared'),('sold','Sold'),('waste','Actual Waste')] %}
+    <label>{{label}}<input type="number" name="{{name}}" min="0" step="1" required value="{{values.get(name,'')}}"{% if errors.get(name) %} aria-invalid="true"{% endif %}>{{error(name)}}</label>
+  {% endfor %}
+    <label>Leftover · calculated<input readonly data-leftover value="{{(values.get('prepared')|int-values.get('sold')|int) if values.get('prepared') is not none and values.get('sold') is not none else ''}}"></label>
+  </div>
+  {% if not r %}<p><a data-record-panel href="{{url_for('bulk_entry')}}">Switch to Daily Bulk Entry</a></p>{% endif %}
+  
+  {% if r %}<label>Correction reason<textarea name="reason" maxlength="1000" required>{{values.get('reason','')}}</textarea>{{error('reason')}}</label>{% endif %}
+  <footer class="panel-actions"><button type="submit">Review &amp; Save</button><a href="{{back}}" data-panel-close>Cancel</a></footer>
+</form>

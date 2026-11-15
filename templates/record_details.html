@@ -1,0 +1,7 @@
+<header class="panel-heading"><h1 id="record-panel-title">Record Details</h1><a href="{{back}}" data-panel-close aria-label="Close panel">Close</a></header>
+<h2>{{r.item}}</h2><p>{{r.day}} · {{r.period}} · {{items[r.item]}}</p>
+<dl class="record-facts">{% for name,value in [('Prepared',r.prepared),('Sold',r.sold),('Leftover',r.prepared-r.sold),('Actual Waste',r.waste)] %}<div><dt>{{name}}</dt><dd>{{'{:,}'.format(value)}} <small>{{items[r.item]|lower}}{{'s' if value != 1}}</small></dd></div>{% endfor %}</dl>
+{% if editable %}<a class="action-link" data-record-panel href="{{url_for('correct',rid=r.id,back=back)}}">Correct record</a>
+{% if session.role == 'Manager' %}<a class="action-link secondary delete-action" data-record-panel href="{{url_for('delete_record',rid=r.id,back=back)}}">Delete record</a>{% endif %}
+<h2>Correction History</h2>
+{% for entry in history %}<section class="history-entry"><strong>{{entry.corrected_at}} UTC</strong><p>{{entry.reason}}</p><dl>{% for label, old in entry.old_values.items() %}<div><dt>{{label}}</dt><dd>{{old}} → {{entry.new_values[label]}}</dd></div>{% endfor %}</dl></section>{% else %}<p>No corrections recorded.</p>{% endfor %}{% endif %}

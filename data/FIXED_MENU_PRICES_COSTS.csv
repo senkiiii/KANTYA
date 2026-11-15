@@ -1,0 +1,18 @@
+﻿food_item_name,category,unit,selling_price_php,unit_preparation_cost_php,estimated_unit_margin_before_overhead_php,price_start_date,price_end_date,pricing_source,price_version
+Arroz Caldo,Breakfast,Bowl,45,26,19,2024-11-12,,SYNTHETIC ASSUMPTION - fixed price for scenario,v1
+Banana Cue,Snack,Stick,20,10,10,2024-11-12,,SYNTHETIC ASSUMPTION - fixed price for scenario,v1
+Bottled Water,Drink,Bottle,20,12,8,2024-11-12,,SYNTHETIC ASSUMPTION - fixed price for scenario,v1
+Chicken Adobo,Main Dish,Serving,75,45,30,2024-11-12,,SYNTHETIC ASSUMPTION - fixed price for scenario,v1
+Chicken Afritada,Main Dish,Serving,80,49,31,2024-11-12,,SYNTHETIC ASSUMPTION - fixed price for scenario,v1
+Egg Sandwich,Breakfast,Piece,35,19,16,2024-11-12,,SYNTHETIC ASSUMPTION - fixed price for scenario,v1
+Fried Chicken,Main Dish,Piece,85,53,32,2024-11-12,,SYNTHETIC ASSUMPTION - fixed price for scenario,v1
+Gulaman,Drink,Cup,25,12,13,2024-11-12,,SYNTHETIC ASSUMPTION - fixed price for scenario,v1
+Iced Tea,Drink,Cup,25,11,14,2024-11-12,,SYNTHETIC ASSUMPTION - fixed price for scenario,v1
+Pancit Bihon,Breakfast,Serving,45,25,20,2024-11-12,,SYNTHETIC ASSUMPTION - fixed price for scenario,v1
+Pancit Canton,Breakfast,Serving,45,26,19,2024-11-12,,SYNTHETIC ASSUMPTION - fixed price for scenario,v1
+Pork Adobo,Main Dish,Serving,80,49,31,2024-11-12,,SYNTHETIC ASSUMPTION - fixed price for scenario,v1
+Pork Sisig,Main Dish,Serving,85,53,32,2024-11-12,,SYNTHETIC ASSUMPTION - fixed price for scenario,v1
+Siomai,Snack,Serving,45,26,19,2024-11-12,,SYNTHETIC ASSUMPTION - fixed price for scenario,v1
+Tuna Sandwich,Snack,Piece,45,25,20,2024-11-12,,SYNTHETIC ASSUMPTION - fixed price for scenario,v1
+Turon,Snack,Piece,20,10,10,2024-11-12,,SYNTHETIC ASSUMPTION - fixed price for scenario,v1
+Vegetable Curry,Main Dish,Serving,60,34,26,2024-11-12,,SYNTHETIC ASSUMPTION - fixed price for scenario,v1

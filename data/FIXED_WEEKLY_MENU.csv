@@ -1,0 +1,41 @@
+﻿weekday,selling_period,food_item_name,category,unit,baseline_demand
+Monday,Breakfast,Arroz Caldo,Breakfast,Bowl,42
+Monday,Breakfast,Pancit Canton,Breakfast,Serving,39
+Monday,Lunch,Chicken Adobo,Main Dish,Serving,64
+Monday,Lunch,Vegetable Curry,Main Dish,Serving,30
+Monday,Lunch,Iced Tea,Drink,Cup,52
+Monday,Snack,Banana Cue,Snack,Stick,41
+Monday,Snack,Tuna Sandwich,Snack,Piece,37
+Monday,Snack,Bottled Water,Drink,Bottle,78
+Tuesday,Breakfast,Pancit Canton,Breakfast,Serving,39
+Tuesday,Breakfast,Egg Sandwich,Breakfast,Piece,31
+Tuesday,Lunch,Pork Sisig,Main Dish,Serving,52
+Tuesday,Lunch,Fried Chicken,Main Dish,Piece,67
+Tuesday,Lunch,Gulaman,Drink,Cup,49
+Tuesday,Snack,Turon,Snack,Piece,42
+Tuesday,Snack,Banana Cue,Snack,Stick,41
+Tuesday,Snack,Bottled Water,Drink,Bottle,78
+Wednesday,Breakfast,Arroz Caldo,Breakfast,Bowl,42
+Wednesday,Breakfast,Pancit Bihon,Breakfast,Serving,34
+Wednesday,Lunch,Chicken Afritada,Main Dish,Serving,46
+Wednesday,Lunch,Pork Adobo,Main Dish,Serving,48
+Wednesday,Lunch,Iced Tea,Drink,Cup,52
+Wednesday,Snack,Tuna Sandwich,Snack,Piece,37
+Wednesday,Snack,Turon,Snack,Piece,42
+Wednesday,Snack,Bottled Water,Drink,Bottle,78
+Thursday,Breakfast,Pancit Canton,Breakfast,Serving,39
+Thursday,Breakfast,Egg Sandwich,Breakfast,Piece,31
+Thursday,Lunch,Fried Chicken,Main Dish,Piece,67
+Thursday,Lunch,Vegetable Curry,Main Dish,Serving,30
+Thursday,Lunch,Gulaman,Drink,Cup,49
+Thursday,Snack,Banana Cue,Snack,Stick,41
+Thursday,Snack,Siomai,Snack,Serving,39
+Thursday,Snack,Bottled Water,Drink,Bottle,78
+Friday,Breakfast,Arroz Caldo,Breakfast,Bowl,42
+Friday,Breakfast,Pancit Bihon,Breakfast,Serving,34
+Friday,Lunch,Chicken Adobo,Main Dish,Serving,64
+Friday,Lunch,Pork Sisig,Main Dish,Serving,52
+Friday,Lunch,Iced Tea,Drink,Cup,52
+Friday,Snack,Tuna Sandwich,Snack,Piece,37
+Friday,Snack,Turon,Snack,Piece,42
+Friday,Snack,Bottled Water,Drink,Bottle,78

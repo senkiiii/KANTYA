@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% from 'components.html' import filters_bar, item_table %}
+{% block content %}
+<div class="report-numbers">
+<div class="page-heading"><h1>Reports</h1>
+{% if backup_allowed %}
+<a class="action-link secondary" href="{{url_for('reports',backup='open',start=filters.start,end=filters.end,item=filters.item,period=filters.period)}}">Backup &amp; Recovery</a>
+{% endif %}
+</div>
+{{filters_bar(filters,items,'reports')}}
+<div class="dashboard-scope"><span>{{filters.start}} to {{filters.end}}</span><span>{{'{:,}'.format(coverage.included)}} records · {{coverage.dates}} operating dates</span></div>
+<h2>Sales and Waste Summary</h2>
+{{item_table(totals)}}
+<details class="detail-section"><summary>Breakdown by Selling Period</summary>
+<div class="table"><table><thead><tr><th>Item / period</th><th>Unit</th><th>Dates</th><th>Average sold per date</th><th>Leftover</th><th>Waste</th></tr></thead><tbody>
+{% for s in series %}<tr><td>{{s.item}}<small>{{s.period}}</small></td><td>{{s.unit}}</td><td>{{s.dates}}</td><td>{{s.mean_daily|number}}</td><td>{{'{:,}'.format(s.leftover)}}</td><td>{{'{:,}'.format(s.waste)}}</td></tr>{% else %}<tr><td colspan="6">No records in this selection.</td></tr>{% endfor %}
+</tbody></table></div></details>
+{% if development %}<p class="helper">Data source · Development data in this selection.</p>{% endif %}
+</div>
+{% if backup %}{% include 'backup_recovery.html' %}{% endif %}
+{% endblock %}

@@ -1,0 +1,10 @@
+<header class="panel-heading"><h1 id="record-panel-title">Import Food Records</h1><a href="{{back}}" data-panel-close>× Close</a></header>
+
+<p><a href="{{url_for('csv_template')}}">Download CSV Template</a></p>
+{% if import_message %}<p class="field-error" role="alert">{{import_message}}</p>{% endif %}
+{% if not result %}<form class="record-form" method="post" action="{{url_for('import_csv')}}" enctype="multipart/form-data"><input type="hidden" name="csrf" value="{{session.csrf}}"><input type="hidden" name="action" value="preview"><label>Select CSV file<input type="file" name="file" accept=".csv,text/csv" required></label><footer class="panel-actions"><button type="submit">Validate &amp; Preview</button><a href="{{back}}" data-panel-close>Cancel</a></footer></form>
+{% else %}<div class="rev-kpis" style="grid-template-columns:repeat(3,minmax(0,1fr))"><div class="rev-kpi"><small>Valid</small><strong>{{result.valid}}</strong></div><div class="rev-kpi"><small>Duplicates</small><strong>{{result.duplicates}}</strong></div><div class="rev-kpi"><small>Invalid</small><strong>{{result.invalid}}</strong></div></div>
+{% if import_errors %}<p><a href="{{url_for('csv_import_errors',token=result.token)}}">Download Error Report (CSV)</a></p><div class="rev-table"><table><thead><tr><th>CSV Row</th><th>Item</th><th>Reason</th></tr></thead><tbody>{% for er in import_errors %}<tr><td>{{er.row}}</td><td>{{er.item}}</td><td>{{er.reason}}</td></tr>{% endfor %}</tbody></table></div>{% endif %}
+
+<form class="record-form" method="post" action="{{url_for('import_csv')}}"><input type="hidden" name="csrf" value="{{session.csrf}}"><input type="hidden" name="action" value="confirm"><input type="hidden" name="token" value="{{result.token}}"><footer class="panel-actions"><button type="submit" {% if not result.valid %}disabled{% endif %}>Confirm Import ({{result.valid}})</button><a href="{{url_for('import_csv')}}" data-record-panel>Upload Another</a></footer></form>
+{% endif %}

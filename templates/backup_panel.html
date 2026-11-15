@@ -1,0 +1,23 @@
+<header class="panel-heading"><h1 id="record-panel-title">Backup &amp; Recovery</h1><a href="{{back}}" data-panel-close>× Close</a></header>
+<section class="backup-section">
+  <h2>Download Records Backup</h2>
+  <form class="record-form" method="post" action="{{url_for('backup_recovery')}}" data-direct-download>
+    <input type="hidden" name="csrf" value="{{session.csrf}}">
+    <input type="hidden" name="action" value="download_csv">
+    <button type="submit">Download CSV</button>
+  </form>
+</section>
+<section class="backup-section">
+  <h2>Deleted Records</h2>
+  {% if backup.deleted %}
+  <div class="rev-table backup-deleted-table"><table><thead><tr><th>Food Item</th><th>Record Date</th><th>Deleted On</th><th>Action</th></tr></thead>
+  <tbody>{% for row in backup.deleted %}<tr>
+    <td>{{row.item}} <small>{{row.period}}</small></td><td>{{row.day}}</td><td>{{row.deleted_at}}</td>
+    <td><form class="record-form" method="post" action="{{url_for('backup_recovery')}}">
+      <input type="hidden" name="csrf" value="{{session.csrf}}"><input type="hidden" name="action" value="restore_record">
+      <input type="hidden" name="deleted_id" value="{{row.id}}"><input type="hidden" name="confirm" value="yes">
+      <button type="submit" class="secondary">Restore</button>
+    </form></td>
+  </tr>{% endfor %}</tbody></table></div>
+  {% else %}<p class="muted">No deleted food records.</p>{% endif %}
+</section>

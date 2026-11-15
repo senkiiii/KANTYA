@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="login-card signin-card" aria-labelledby="signin-heading">
+  <header class="signin-identity">
+    <img class="signin-seal" src="{{ url_for('static', filename='isu-logo.webp') }}" alt="Isabela State University" width="64" height="74">
+    <div><strong>KANTYA</strong><span class="role-tag">{{ selected_role }}</span></div>
+  </header>
+  <a class="auth-back" href="{{ url_for('choose_role') }}">← Back to roles</a>
+  <h1 id="signin-heading">Log in</h1>
+  {% include 'notices.html' %}
+  {% if otp_delivery_failed %}
+  <div class="signin-alert" role="alert">
+    <strong>Could not send the login code</strong>
+    <p>Your email and password were accepted. Try again later or contact your administrator.</p>
+  </div>
+  {% endif %}
+  <form method="post">
+    <input type="hidden" name="csrf" value="{{ session.csrf }}">
+    <input type="hidden" name="role" value="{{ selected_role }}">
+    <label for="email">Email address</label>
+    <input id="email" type="email" name="email" required autocomplete="username" maxlength="254" value="{{ entered_email|default('') }}" placeholder="name@example.com">
+    <label for="password">Password</label>
+    <input id="password" type="password" name="password" required autocomplete="current-password" placeholder="Enter password">
+    <button class="signin">Log in</button>
+  </form>
+  <footer class="signin-links">
+    <a href="{{ url_for('forgot_password') }}">Forgot password?</a>
+    <a href="{{ url_for('signup', role=selected_role) }}">Sign up</a>
+  </footer>
+</section>
+{% endblock %}

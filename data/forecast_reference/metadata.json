@@ -1,0 +1,78 @@
+{
+  "selection_metric": "macro MASE; initial training lag-1 absolute differences",
+  "method": "HoltWintersAdd5",
+  "horizon": 5,
+  "evaluation": "Expanding history, non-overlapping 5-operating-day blocks, refit per origin",
+  "units": {
+    "Chicken Adobo": "Serving",
+    "Pancit Canton": "Serving",
+    "Fried Chicken": "Piece",
+    "Vegetable Curry": "Serving",
+    "Pork Sisig": "Serving",
+    "Tuna Sandwich": "Piece",
+    "Banana Cue": "Stick",
+    "Arroz Caldo": "Bowl"
+  },
+  "provenance": "simulated, user-confirmed",
+  "calendar": "Weekdays excluding supplied holidays and the two confirmed semester breaks",
+  "calendar_end": "2026-09-30",
+  "holidays": [
+    "2025-10-31",
+    "2025-12-08",
+    "2025-12-24",
+    "2025-12-25",
+    "2025-12-30",
+    "2025-12-31",
+    "2026-01-01",
+    "2026-02-17",
+    "2026-03-20",
+    "2026-04-02",
+    "2026-04-03",
+    "2026-04-09",
+    "2026-05-01",
+    "2026-05-27",
+    "2026-06-12",
+    "2026-08-21",
+    "2026-08-31",
+    "2026-09-18"
+  ],
+  "semester_breaks": [
+    [
+      "2025-12-16",
+      "2026-01-11"
+    ],
+    [
+      "2026-05-19",
+      "2026-07-19"
+    ]
+  ],
+  "future_forecast_available": false,
+  "dataset_sha256": "e2951126c031ee78d2fb2402a6a2b62a0a7bbee1a3c6d65055e9b54c40b5ab7d",
+  "history_end": "2026-09-30",
+  "validation_tail_dates_excluded_from_scoring": 3,
+  "test_status": "exploratory previously inspected holdout",
+  "python": "3.12.14",
+  "numpy": "2.3.5",
+  "pandas": "2.2.3",
+  "statsmodels": "0.15.0",
+  "split_dates": [
+    {
+      "split": "Training",
+      "operating_dates": "130",
+      "start_date": "2025-10-01",
+      "end_date": "2026-05-07"
+    },
+    {
+      "split": "Validation",
+      "operating_dates": "28",
+      "start_date": "2026-05-08",
+      "end_date": "2026-08-17"
+    },
+    {
+      "split": "Test",
+      "operating_dates": "29",
+      "start_date": "2026-08-18",
+      "end_date": "2026-09-30"
+    }
+  ]
+}

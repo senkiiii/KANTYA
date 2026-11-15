@@ -1,0 +1,24 @@
+{% macro bars(entries, tone='', filters=none) %}
+<ul class="focus-bars">
+{% for e in entries %}
+  <li><div class="bar-heading">{% if filters %}<a href="{{url_for('index',start=filters.start,end=filters.end,item=e.label,period=filters.period)}}">{{e.label}}</a>{% else %}<strong>{{e.label}}</strong>{% endif %}</div>
+    <div class="bar-track">
+      <div class="bar-fill {{tone}}" style="width:{{e.width}}%">
+        {% if e.width >= 27 %}<strong class="bar-value">{{e.display}}</strong>{% endif %}
+      </div>
+      {% if e.width < 27 %}<strong class="bar-small">{{e.display}}</strong>{% endif %}
+    </div>
+  </li>
+{% else %}<li class="focus-empty">No comparable values for this selection.</li>{% endfor %}
+</ul>
+{% endmacro %}
+
+{% macro waste_pie(entries) %}
+{% if entries %}
+<div class="waste-pie-disc" role="img" aria-label="{% for e in entries %}{{e.name}}: {{e.count}} records ({{'%.1f'|format(e.share)}}%){% if not loop.last %}; {% endif %}{% endfor %}"
+  style="background:conic-gradient({% for e in entries %}{{e.color}} {{e.offset}}% {{100 if loop.last else e.offset+e.share}}%{{', ' if not loop.last}}{% if loop.length == 1 %}, {{e.color}} 100%{% endif %}{% endfor %})">
+  {% for e in entries if e.share >= 20 %}<span class="waste-pie-value" style="left:{{e.x}}%;top:{{e.y}}%" aria-hidden="true"><strong>{{'{:,}'.format(e.count)}}</strong><small>{{'%.1f'|format(e.share)}}%</small></span>{% endfor %}
+</div>
+<div class="focus-legend">{% for e in entries %}<span><i style="background:{{e.color}}"></i>{{e.name}} · {{'{:,}'.format(e.count)}} ({{'%.1f'|format(e.share)}}%)</span>{% endfor %}</div>
+{% else %}<p class="focus-empty">No waste records for this selection.</p>{% endif %}
+{% endmacro %}

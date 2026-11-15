@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="page-heading"><h1>Forecast Planning</h1></div>
+<form class="filters" method="get"><label>Food item<select name="item">{% for i in items %}<option {% if item==i %}selected{% endif %}>{{i}}</option>{% endfor %}</select></label><label>Selling period<select name="period">{% for p in ['Breakfast','Lunch','Snack'] %}<option {% if period==p %}selected{% endif %}>{{p}}</option>{% endfor %}</select></label><button>Apply selection</button></form>
+{% if error %}<p class="notice warning" role="alert">{{error}}</p>{% endif %}
+{% if demo %}<p class="notice warning"><strong>Demo forecast.</strong> Illustrative weekdays based on the selected sales history. Use confirmed canteen dates for preparation.</p>{% endif %}
+{% if outdated or elapsed %}<p class="notice warning">This saved run is historical. Generate a current run before using estimates for preparation.</p>{% endif %}
+{% if forecast_available %}
+<div class="dashboard-scope"><span>Sales recorded through {{cutoff}}</span><span>{{future_dates|join(' · ')}}</span></div>
+<form class="page-actions" method="post" action="{{url_for('forecast',item=item,period=period)}}"><input type="hidden" name="csrf" value="{{session.csrf}}"><button>Generate 5-Day Forecast</button></form>
+{% else %}
+<p class="notice warning">{% if cutoff %}<strong>Forecast unavailable.</strong> Sales are recorded through {{cutoff}}, and the operating calendar ends on {{calendar_end}}. The forecast needs {{missing_dates}} more confirmed operating {{'day' if missing_dates == 1 else 'days'}} after {{cutoff}}.{% else %}<strong>Sales records needed.</strong> Save an operating record before generating a forecast.{% endif %}</p>
+{% endif %}
+{% if demo_available %}
+<form class="page-actions" method="post" action="{{url_for('forecast',item=item,period=period)}}"><input type="hidden" name="csrf" value="{{session.csrf}}"><button class="secondary" name="mode" value="demo">Preview 5-Day Demo</button></form>
+{% endif %}
+<div class="section-heading"><h2>{{item}} · {{period}}</h2><span>{{unit|lower}}s</span></div>
+<div class="forecast-charts">
+<section class="chart-panel"><h2>{{'Recorded Sales and Forecast' if graph else 'Recorded Sales Trend'}}</h2>
+<div class="forecast-trend">
+{% if graph or historical_graph %}{% set graph=graph or historical_graph %}{% set caption='Recorded sales and estimated sales by operating date' if results else 'Recorded sales by operating date' %}{% include 'chart.html' %}{% else %}<p>No sales records for this item and period.</p>{% endif %}
+</div></section>
+
+</div>
+{% if results %}<h2>Five-date sales estimates</h2><div class="table"><table><thead><tr><th>Operating date</th><th>Estimated sales ({{unit|lower}}s)</th></tr></thead><tbody>{% for r in results %}<tr><td>{{r.day}}</td><td>{{'{:,}'.format(r.quantity)}}</td></tr>{% endfor %}</tbody></table></div>{% endif %}
+{% include 'forecast_summary.html' %}
+<details class="detail-section"><summary>Forecast Model Evaluation</summary><p>{{method}} · Development reference dataset</p>
+<div class="table"><table><thead><tr><th>Item</th><th>Period</th><th>MAE</th><th>RMSE</th><th>MAPE (nonzero sales)</th><th>Unit</th></tr></thead><tbody>{% for e in evaluation %}<tr><td>{{e.food_item_name}}</td><td>{{e.selling_period}}</td><td>{{e.MAE|number}}</td><td>{{e.RMSE|number}}</td><td>{{e.MAPE_nonzero|percent}}</td><td>{{e.unit}}</td></tr>{% else %}<tr><td colspan="6">No reference series matches this selection.</td></tr>{% endfor %}</tbody></table></div></details>
+{% endblock %}

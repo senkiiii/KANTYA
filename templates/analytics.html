@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% from 'components.html' import filters_bar %}
+{% from 'simple_charts.html' import bars, waste_pie %}
+{% block content %}
+<div class="page-heading"><h1>Dashboard</h1><div class="dashboard-actions">
+{% if session.role=='Staff' %}<a class="action-link" data-record-panel href="{{url_for('add',back=request.full_path.rstrip('?'))}}">Add food record</a>{% else %}<a class="action-link" href="{{url_for('forecast')}}">Plan preparation</a>{% endif %}
+
+</div></div>
+<nav class="tabs" aria-label="Dashboard views">
+{% for key,label in [('overview','Overview'),('patterns','Sales Patterns'),('waste','Leftovers & Waste')] if key != 'waste' or session.role == 'Manager' %}
+<a class="{{'active' if filters.view==key}}" {% if filters.view==key %}aria-current="page"{% endif %} href="{{url_for('dashboard',start=filters.start,end=filters.end,item=filters.item,period=filters.period,view=key)}}">{{label}}</a>
+{% endfor %}
+</nav>
+{{filters_bar(filters,items)}}
+<div class="dashboard-scope"><span>{{filters.start}} to {{filters.end}}</span><span>{{'{:,}'.format(coverage.included)}} records · {{coverage.dates}} operating dates{% if development %} · Demo data{% endif %}</span></div>
+{% if not coverage.included %}
+<section class="empty-state"><h2>No records in this scope</h2><p>Choose another date range, food item, or selling period.</p></section>
+{% elif filters.view=='overview' %}
+<div class="section-heading"><h2>{{'Yesterday’s Sales' if metrics.day==metrics.yesterday else 'Latest Recorded Sales'}}</h2><span>{{metrics.day or 'No recorded date'}}</span></div>
+<div class="cards analytical-cards">
+{% for row in metrics.units %}<section class="metric"><span class="eyebrow">{{row.unit}} sold</span><strong class="metric-value">{{'{:,}'.format(row.sold)}}</strong><span class="metric-unit">{{'{:,}'.format(row.prepared)}} prepared · {{'{:,}'.format(row.leftover)}} leftover{% if session.role=='Manager' %} · {{'{:,}'.format(row.waste)}} wasted{% endif %}</span>
+{% if row.delta is not none %}<span class="metric-unit">{{'%+d'|format(row.delta)}} vs {{metrics.previous}}</span>{% endif %}</section>{% endfor %}
+</div>
+{% if focus %}<p class="helper">Selected range · {{'{:,}'.format(focus.sold)}} {{unit|lower}}s sold</p>{% endif %}
+{% if metrics.comparable %}
+{% set lower=metrics.units|selectattr('delta','lt',0)|list %}
+{% set higher=metrics.units|selectattr('delta','gt',0)|list %}
+<p class="focus-insight"><strong>Compared with {{metrics.previous}}.</strong>
+{% if lower %}Sales fell for {{lower|map(attribute='unit')|join(', ')}}. Check the item and selling-period figures before changing preparation.
+{% elif higher %}Sales rose for {{higher|map(attribute='unit')|join(', ')}}. Check leftovers alongside sales before increasing preparation.
+{% else %}Sales were unchanged across the displayed units.{% endif %}</p>
+{% else %}<p class="helper">Daily change requires the same item and selling-period coverage on both operating dates.</p>{% endif %}
+<div class="focus-grid">
+<section class="chart-panel"><h2>Sales by Selling Period</h2><div class="focus-scroll" tabindex="0" aria-label="Recorded sales by period">
+{% for period in ('Breakfast','Lunch','Snack') %}<h3>{{period}}</h3>
+<ul>{% for r in metrics.daily if r.period==period %}<li><strong>{{r.item}}</strong> · {{r.sold}} {{items[r.item]|lower}}{{'s' if r.sold != 1}} sold</li>{% else %}<li>No records</li>{% endfor %}</ul>{% endfor %}
+</div></section>
+{% if session.role=='Manager' %}<section class="chart-panel"><h2>Preparation Review</h2><div class="focus-scroll" tabindex="0" aria-label="Preparation review">
+{% for g in metrics.guidance %}<h3>{{g.item}} · {{g.period}}</h3>
+<p>Last {{g.count}} records averaged <strong>{{g.average|number}} {{g.unit}} sold</strong> and <strong>{{g.leftover|number}} left over</strong>. {% if g.leftover > 0 %}Review batch size for this selling period.{% else %}All prepared portions sold on {{g.full}} of {{g.count}} recorded dates. Check whether stock ran out early.{% endif %}</p>
+{% else %}<p>No preparation signal from item–period groups with at least three records.</p>{% endfor %}
+</div><a href="{{url_for('forecast')}}">Open Forecast Planning →</a></section>
+{% else %}<section class="chart-panel"><h2>Sales Summary</h2><div class="focus-scroll" tabindex="0" aria-label="Sell-through by item">{{bars(metrics.sold_bars, filters=filters)}}</div><p class="focus-insight">Sell-through is the share of prepared food that sold.</p></section>{% endif %}
+</div>
+{% elif filters.view=='patterns' %}
+<div class="focus-grid">
+<section class="chart-panel"><h2>Sell-through by Food Item</h2><div class="focus-scroll" tabindex="0" aria-label="Sell-through by food item">{{bars(metrics.sold_bars, filters=filters)}}</div>
+{% if metrics.sold_bars %}<p class="focus-insight">{{metrics.sold_bars[0].label}} sold {{metrics.sold_bars[0].display}} of its prepared quantity in this period.</p>{% endif %}</section>
+<section class="chart-panel"><h2>Median Sell-through by Selling Period</h2><div class="focus-scroll" tabindex="0" aria-label="Sell-through by selling period">{{bars(metrics.period_bars)}}
+{% if focus %}<p><strong>{{filters.item}}:</strong> {{'{:,}'.format(focus.sold)}} {{unit|lower}}s sold in the selected scope.</p>{% endif %}
+</div><p class="focus-insight">Each period shows the median of its item-level sales rates.</p></section>
+</div>
+{% if metrics.sales_trend %}<section class="chart-panel focus-scope"><h2>{{filters.item}} Sales Trend</h2>{% set graph=metrics.sales_trend %}{% set caption='Recorded sales per operating date' %}{% include 'chart.html' %}</section>{% endif %}
+{% include 'comparison.html' %}
+{% else %}
+<div class="focus-grid">
+<section class="chart-panel"><h2>Waste Rate by Food Item</h2><div class="focus-scroll" tabindex="0" aria-label="Waste rate by food item">{{bars(metrics.waste_bars,'orange-bar',filters)}}</div>
+{% if metrics.waste_bars %}{% set top=metrics.waste_bars[0] %}<p class="focus-insight"><strong>Item to Watch · {{top.label}}</strong> recorded {{top.display}} waste relative to preparation, the highest in this selection. Compare its portions and unsold quantities by selling period.</p>{% endif %}</section>
+<section class="chart-panel"><h2>Records With and Without Waste</h2><div class="focus-scroll" tabindex="0" aria-label="Recorded waste split">{{waste_pie(metrics.pie)}}</div></section>
+</div>
+<h2>Leftovers and Waste by Unit</h2>
+<div class="table"><table><thead><tr><th>Unit</th><th>Prepared</th><th>Leftover</th><th>Actual waste</th></tr></thead><tbody>
+{% for row in metrics.waste_units %}<tr><td>{{row.unit|capitalize}}</td><td>{{'{:,}'.format(row.prepared)}}</td><td>{{'{:,}'.format(row.leftover)}}</td><td>{{'{:,}'.format(row.waste)}}</td></tr>{% endfor %}
+</tbody></table></div>
+<p class="helper">Leftover is prepared minus sold. Actual waste is the recorded discarded portion of leftover.</p>
+{% endif %}
+{% endblock %}

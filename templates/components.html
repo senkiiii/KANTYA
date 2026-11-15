@@ -1,0 +1,36 @@
+{% macro filters_bar(filters, items, endpoint='dashboard') %}
+<form class="filters" method="get" action="{{url_for(endpoint)}}">
+ <input type="hidden" name="view" value="{{filters.view}}">
+ <label>From<input type="date" name="start" value="{{filters.start}}" required></label>
+ <label>To<input type="date" name="end" value="{{filters.end}}" required></label>
+ <label class="item-filter">Food item<select name="item"><option value="">All food items</option>{% for item in items %}<option value="{{item}}" {% if filters.item==item %}selected{% endif %}>{{item}}</option>{% endfor %}</select></label>
+ <label>Selling period<select name="period"><option value="">All periods</option>{% for period in ['Breakfast','Lunch','Snack'] %}<option {% if filters.period==period %}selected{% endif %}>{{period}}</option>{% endfor %}</select></label>
+ {% if endpoint=='index' %}<label>Search item<input name="q" value="{{filters.q}}" maxlength="100"></label><label>Sort<select name="sort"><option value="newest" {% if filters.sort=='newest' %}selected{% endif %}>Newest first</option><option value="oldest" {% if filters.sort=='oldest' %}selected{% endif %}>Oldest first</option></select></label>{% endif %}
+ <button>Apply filters</button><a class="reset" href="{{url_for(endpoint)}}">Reset</a>
+</form>
+{% endmacro %}
+{% macro coverage_note(coverage) %}
+<div class="coverage-strip"><span><strong>{{'{:,}'.format(coverage.included)}}</strong> included records</span><span><strong>{{coverage.dates}}</strong> observed operating dates</span><span>Latest saved record <strong>{{coverage.latest or 'None'}}</strong></span></div>
+{% if coverage.missing or coverage.outside %}<p class="notice warning">{% if coverage.missing %}{{coverage.missing}} expected item–period–date records are missing within the supplied calendar. Absence is not zero sales.{% endif %} {% if coverage.outside %}Part of the selected range is outside the supplied calendar coverage.{% endif %}</p>{% endif %}
+<details class="coverage-details"><summary>Calendar and data scope</summary><p>The supplied calendar excludes weekends, listed holidays, and semester breaks (16 Dec 2025–11 Jan 2026; 19 May–19 Jul 2026). Dates outside that coverage have not been confirmed.</p><p>{{coverage.excluded}} saved records in this selection are excluded from analysis by the calendar.{% for reason,count in coverage.reasons.items() %} {{reason}}: {{count}}.{% endfor %} Saved records remain in the database.</p><p>Expected operating dates in this range: {{coverage.expected_dates}}. Missing-record checks use the item–period combinations in the supplied dataset. Item units follow the supplied project mapping.</p></details>
+{% endmacro %}
+{% macro metric_cards(focus, unit, totals, coverage) %}
+<div class="cards">
+{% if focus %}
+ {% for name,field in [('Prepared','prepared'),('Sold','sold'),('Leftover','leftover'),('Actual waste','waste')] %}
+ <section class="metric"><span class="eyebrow">{{name}}</span><strong class="metric-value">{{'{:,}'.format(focus[field])}}</strong><span class="metric-unit">{{unit}} · selected scope</span></section>
+ {% endfor %}
+{% else %}
+ <section class="metric"><span class="eyebrow">Food items</span><strong class="metric-value">{{totals|length}}</strong><span class="metric-unit">with included records</span></section>
+ <section class="metric"><span class="eyebrow">Observed dates</span><strong class="metric-value">{{coverage.dates}}</strong><span class="metric-unit">within selected scope</span></section>
+ <section class="metric"><span class="eyebrow">Included records</span><strong class="metric-value">{{'{:,}'.format(coverage.included)}}</strong><span class="metric-unit">one item × date × period</span></section>
+{% endif %}
+</div>
+{% endmacro %}
+{% macro item_table(totals) %}
+<div class="table"><table><caption class="sr-only">Item summaries for the selected scope; quantities retain each item's unit</caption><thead><tr><th>Food item / unit</th><th>Prepared</th><th>Sold</th><th>Leftover</th><th>Actual waste</th><th>Sell-through</th><th>Waste / prepared</th><th>Records</th></tr></thead><tbody>{% for t in totals %}<tr><td><a href="{{t.href}}">{{t.item}}</a><small>{{t.unit}}</small></td><td>{{'{:,}'.format(t.prepared)}}</td><td>{{'{:,}'.format(t.sold)}}</td><td>{{'{:,}'.format(t.leftover)}}</td><td>{{'{:,}'.format(t.waste)}}</td><td>{{t.sell_rate|percent}}</td><td>{{t.waste_rate|percent}}</td><td>{{'{:,}'.format(t.count)}}</td></tr>{% else %}<tr><td colspan="8">No records in this selection.</td></tr>{% endfor %}</tbody></table></div>
+{% endmacro %}
+{% macro records_table(rows, items, role) %}
+<div class="table"><table><caption class="sr-only">Records supporting the selected analysis</caption><thead><tr><th>Date</th><th>Food item / unit</th><th>Period</th><th>Prepared</th><th>Sold</th><th>Leftover</th><th>Actual waste</th><th>Action</th></tr></thead><tbody>{% for r in rows %}<tr><td>{{r.day}}<small>{{r.day|day_name}}</small></td><td>{{r.item}}<small>{{items[r.item]}}</small></td><td>{{r.period}}</td><td>{{r.prepared}}</td><td>{{r.sold}}</td><td>{{r.prepared-r.sold}}</td><td>{{r.waste}}</td><td><a data-record-panel href="{{url_for('view_record',rid=r.id,back=request.full_path.rstrip('?'))}}">View</a></td></tr>{% else %}<tr><td colspan="8">No records match these filters.</td></tr>{% endfor %}</tbody></table></div>
+{% endmacro %}
+{% macro pager(page, pages, previous, following) %}<nav class="pagination" aria-label="Record pages">{% if previous %}<a href="{{previous}}">← Previous</a>{% endif %}<span>Page {{page}} of {{pages}}</span>{% if following %}<a href="{{following}}">Next →</a>{% endif %}</nav>{% endmacro %}

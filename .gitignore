@@ -1,0 +1,10 @@
+.env
+*.db
+__pycache__/
+.pytest_cache/
+.env
+.env.*
+!.env.example
+instance/
+*.bak
+tempCodeRunnerFile.py

@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="login-card role-card" aria-labelledby="role-heading">
+  <header class="role-identity">
+    <img src="{{ url_for('static', filename='isu-logo.webp') }}" alt="Isabela State University" width="44" height="51">
+    <div><strong>KANTYA</strong><span>ISU Canteen Management</span></div>
+  </header>
+  <h1 id="role-heading">Choose your role</h1>
+  <p class="role-intro">Select a role to sign in.</p>
+  <div class="role-options">
+    <a href="{{ url_for('login', role='Manager') }}" class="role-choice">
+      <span class="role-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4v16h16M9 15v-4m5 4V7m5 8V5"/></svg></span>
+      <span class="role-copy"><strong>Manager</strong><small>Forecasts, reports, and approvals</small></span>
+      <span class="role-arrow" aria-hidden="true">→</span>
+    </a>
+    <a href="{{ url_for('login', role='Staff') }}" class="role-choice">
+      <span class="role-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M9 5V3h6v2m-6 6h6m-6 4h6"/></svg></span>
+      <span class="role-copy"><strong>Staff</strong><small>Daily sales and food records</small></span>
+      <span class="role-arrow" aria-hidden="true">→</span>
+    </a>
+  </div>
+</section>
+{% endblock %}

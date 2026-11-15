@@ -1,0 +1,18 @@
+﻿start_date,end_date,event_name,uplift_assumption_percent,status
+2025-01-13,2025-01-17,Enrollment Drive,32,synthetic historical assumption
+2025-02-17,2025-02-21,Intramurals,34,synthetic historical assumption
+2025-03-01,2025-03-31,Campus Festival Month,45,synthetic historical assumption
+2025-08-18,2025-08-22,Opening Week,34,synthetic historical assumption
+2025-10-13,2025-10-17,College Week,34,synthetic historical assumption
+2025-11-17,2025-11-21,Student Organizations Fair,30,synthetic historical assumption
+2026-01-12,2026-01-16,Enrollment Drive,34,synthetic historical assumption
+2026-02-16,2026-02-20,Intramurals,38,synthetic historical assumption
+2026-03-01,2026-03-31,Campus Festival Month,45,synthetic historical assumption
+2026-08-17,2026-08-21,Opening Week,38,synthetic historical assumption
+2026-10-12,2026-10-16,College Week,39,synthetic historical assumption
+2026-11-02,2026-11-06,Student Organizations Fair,32,synthetic historical assumption
+2026-11-23,2026-11-27,Student Organizations Fair (planned),32,hypothetical future scenario
+2027-01-11,2027-01-22,Enrollment & Orientation Drive (planned),45,hypothetical future scenario
+2027-02-15,2027-02-19,Intramurals (planned),42,hypothetical future scenario
+2027-03-01,2027-03-31,Campus Festival Month (planned),45,hypothetical future scenario
+2027-04-05,2027-04-09,College Week (planned),36,hypothetical future scenario

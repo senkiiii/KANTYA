@@ -1,0 +1,9 @@
+{% extends 'base.html' %}{% from 'components.html' import filters_bar, coverage_note, item_table, records_table, pager %}{% block content %}
+<div class="page-heading"><div><h1>Food Records</h1></div><div class="page-actions">{% if session.role=='Manager' %}<a class="action-link secondary" data-record-panel href="{{url_for('backup_recovery',back=request.full_path.rstrip('?'))}}">Backup &amp; Recovery</a>{% endif %}<a class="action-link secondary" data-record-panel href="/import">Import CSV</a><a class="action-link" data-record-panel href="{{url_for('add',back=request.full_path.rstrip('?'))}}">+ Add Record</a></div></div>
+<div class="status-strip"><span>Records: <strong>{{'{:,}'.format(count)}}</strong></span><span>Missing scheduled entries in selected period: <strong>{{coverage.missing}}</strong></span><span>Calendar coverage: {{coverage.first or '—'}} – {{coverage.latest or '—'}}</span></div>
+{{filters_bar(filters,items,'index')}}
+{% if filters.day %}<p class="notice">Additional date filter: {{filters.day}}. <a href="{{url_for('index',start=filters.start,end=filters.end,item=filters.item,period=filters.period)}}">Clear exact date</a></p>{% endif %}
+
+<h2>Records <small>{{'{:,}'.format(count)}}</small></h2>
+{{records_table(rows,items,session.role)}}{{pager(page,pages,previous,following)}}
+{% endblock %}

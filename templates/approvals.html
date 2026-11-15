@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="page-heading"><h1>Account Approvals</h1></div>
+<h2>Pending Manager Requests</h2>
+{% if pending %}
+<p>Confirm the applicant’s identity. Approve to allow Manager access, or reject to deny the request.</p>
+{% for u in pending %}
+<section class="chart-panel"><strong>{{u.email}}</strong>
+<form class="dashboard-actions" method="post">
+<input type="hidden" name="csrf" value="{{session.csrf}}">
+<input type="hidden" name="user_id" value="{{u.id}}">
+<button name="decision" value="active">Approve</button><button class="reject-action" name="decision" value="rejected">Reject</button>
+</form></section>
+{% endfor %}
+{% else %}<p class="helper">No pending requests. A new Manager appears here after verifying their email code.</p>{% endif %}
+<h2>Existing Accounts</h2>
+<div class="table"><table><thead><tr><th>Account</th><th>Role</th><th>Status</th></tr></thead><tbody>
+{% for u in accounts %}<tr><td>{{u.email or u.username}}</td><td>{{u.role}}</td><td><span class="account-status">{{'Email verification required' if u.status=='unverified' else u.status|capitalize}}</span></td></tr>{% else %}<tr><td colspan="3">No accounts to show.</td></tr>{% endfor %}
+</tbody></table></div>
+<p class="helper">Active accounts can sign in with OTP. Staff accounts activate after email verification. Rejected requests remain inactive.</p>
+{% endblock %}
